@@ -1,7 +1,9 @@
 import { View, Text, ActivityIndicator } from 'react-native'
 import React from 'react'
-import { useMovies } from '@/presentation/hooks/useMovies'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+
+import { useMovies } from '@/presentation/hooks/useMovies'
+import MainSlideShow from '@/presentation/components/MainSlideShow'
 
 const HomeScreen = () => {
   const safeArea = useSafeAreaInsets()
@@ -20,6 +22,8 @@ const HomeScreen = () => {
     <View className='mt-2' style={{ paddingTop: safeArea.top }}>
       <Text className='text-3xl font-bold px-4 mb-2'>HomeScreen</Text>
 
+      {/* Carousel de imagenes */}
+      <MainSlideShow movies={nowPlayingQuery.data ?? []} />
     </View>
   )
 }
