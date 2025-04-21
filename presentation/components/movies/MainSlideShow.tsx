@@ -31,6 +31,10 @@ const MainSlideShow = ({ movies }: Props) => {
           alignItems: 'center',
         }}
         mode='parallax'
+        modeConfig={{
+          parallaxScrollingScale: 0.9,
+          parallaxScrollingOffset: 50,
+        }}
         defaultIndex={1}
       />
     </View>
