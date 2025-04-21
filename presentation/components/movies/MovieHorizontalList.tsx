@@ -1,5 +1,5 @@
-import { View, Text, FlatList } from 'react-native'
-import React from 'react'
+import { View, Text, FlatList, NativeScrollEvent, NativeSyntheticEvent } from 'react-native'
+import React, { useEffect, useRef } from 'react'
 import { Movie } from '@/infraestructure/interfaces/movie.interface';
 import MoviePoster from './MoviePoster';
 
@@ -7,9 +7,38 @@ interface Props {
   title?: string;
   movies: Movie[];
   className?: string;
+
+  loadNextPage?: () => void;
 }
 
-const MovieHorizontalList = ({ movies, title, className }: Props) => {
+const MovieHorizontalList = ({ movies, title, className, loadNextPage }: Props) => {
+
+  const isLoading = useRef(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      isLoading.current = false;
+    }, 200);
+  }, [movies])
+
+
+  const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    if (isLoading.current) return;
+
+    const { contentOffset, layoutMeasurement, contentSize } = event.nativeEvent;
+
+    const isEndReached = (contentOffset.x + layoutMeasurement.width + 600) >= contentSize.width;
+
+    if (!isEndReached) return;
+
+    isLoading.current = true;
+
+    //Todo
+    console.log('Cargar sig peliculas');
+    loadNextPage && loadNextPage();
+
+  }
+
   return (
     <View className={`${className}`}>
       {
@@ -22,8 +51,9 @@ const MovieHorizontalList = ({ movies, title, className }: Props) => {
         horizontal
         data={movies}
         showsHorizontalScrollIndicator={false}
-        keyExtractor={(item) => `${item.id}`}
+        keyExtractor={(item, i) => `${item.id}-${i}`}
         renderItem={({ item }) => <MoviePoster id={item.id} poster={item.poster} smallPoster />}
+        onScroll={onScroll}
       />
 
     </View>
